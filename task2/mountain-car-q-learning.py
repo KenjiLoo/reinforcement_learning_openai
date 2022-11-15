@@ -2,15 +2,15 @@ import gym
 import numpy as np
 import matplotlib.pyplot as plt
 
-MAX_NUM_EPISODES = 100000
-STEPS_PER_EPISODE = 200 #  This is specific to MountainCar. May change with env
+MAX_NUM_EPISODES = 100
+STEPS_PER_EPISODE = 200  #This is specific to MountainCar. May change with env
 EPSILON_MIN = 0.005
 max_num_steps = MAX_NUM_EPISODES * STEPS_PER_EPISODE
 EPSILON_DECAY = 500 * EPSILON_MIN / max_num_steps
 ALPHA = 0.01  # Learning rate
 GAMMA = 0.98  # Discount factor
 NUM_DISCRETE_BINS = 30  # Number of bins to Discretize each observation dim
-
+rewards = []
 
 class Q_Learner(object):
     def __init__(self, env):
@@ -50,7 +50,7 @@ class Q_Learner(object):
 
 def train(agent, env):
     best_reward = -float('inf')
-    rewards = []
+
     rewards_streak = 0
     for episode in range(MAX_NUM_EPISODES):
         done = False
@@ -109,12 +109,14 @@ if __name__ == "__main__":
     # Use the Gym Monitor wrapper to evalaute the agent and record video
     # gym_monitor_path = "./gym_monitor_output"
     # env = gym.wrappers.Monitor(env, gym_monitor_path, force=True)
-    for _ in range(1000):
 
-        test_reward = test(agent, env, learned_policy)
-        print("Test Iteration:{}, Test Reward:{}".format(_, test_reward ))
     env.close()
 
-    plt.plot(range(nbEpisodes), stepsHistory, range(nbEpisodes), [195] * nbEpisodes)
-    plt.ylabel('Number of steps')
+    plt.plot(range(MAX_NUM_EPISODES), rewards)
+    plt.xlabel('Number of Episodes')
+    plt.ylabel('Rewards')
     plt.show()
+
+    for _ in range(1000):
+        test_reward = test(agent, env, learned_policy)
+        print("Test Iteration:{}, Test Reward:{}".format(_, test_reward ))
