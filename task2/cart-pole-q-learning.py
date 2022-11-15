@@ -11,6 +11,7 @@ import numpy as np
 import random
 import math
 from time import sleep
+import matplotlib.pyplot as plt
 
 ## Initialize the "Cart-Pole" environment
 env = gym.make('CartPole-v0')
@@ -41,13 +42,15 @@ MIN_LEARNING_RATE = 0.01
 TEST_RAND_PROB = 0.2
 
 ## Defining the simulation related constants
-NUM_TRAIN_EPISODES = 2000  # 1000
+NUM_TRAIN_EPISODES = 100  # 1000
 NUM_TEST_EPISODES = 1
 MAX_TRAIN_T = 250
 MAX_TEST_T = 250
 STREAK_TO_END = 120
 SOLVED_T = 199
 VERBOSE = False
+
+timesteps = []
 
 
 def train():
@@ -107,6 +110,7 @@ def train():
 
             if done:
                 print("Episode:%d finished after: %f time steps" % (episode, t))
+                timesteps.append(t)
                 if (t >= SOLVED_T):
                     num_train_streaks += 1
                 else:
@@ -123,6 +127,8 @@ def train():
         # Update parameters
         explore_rate = get_explore_rate(episode)
         learning_rate = get_learning_rate(episode)
+
+
 
 
 def test():
@@ -206,4 +212,10 @@ if __name__ == "__main__":
     train()
     print('Testing ...')
     test()
+
+    plt.plot(range(NUM_TRAIN_EPISODES), timesteps)
+    plt.xlabel('Number of Episodes')
+    plt.ylabel('Time Steps')
+    plt.show()
+
 

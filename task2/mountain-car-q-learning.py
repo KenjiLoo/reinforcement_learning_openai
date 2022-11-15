@@ -1,5 +1,6 @@
 import gym
 import numpy as np
+import matplotlib.pyplot as plt
 
 MAX_NUM_EPISODES = 100000
 STEPS_PER_EPISODE = 200 #  This is specific to MountainCar. May change with env
@@ -113,3 +114,7 @@ if __name__ == "__main__":
         test_reward = test(agent, env, learned_policy)
         print("Test Iteration:{}, Test Reward:{}".format(_, test_reward ))
     env.close()
+
+    plt.plot(range(nbEpisodes), stepsHistory, range(nbEpisodes), [195] * nbEpisodes)
+    plt.ylabel('Number of steps')
+    plt.show()
