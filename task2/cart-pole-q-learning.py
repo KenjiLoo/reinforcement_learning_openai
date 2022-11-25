@@ -37,7 +37,7 @@ q_table = np.zeros(NUM_BUCKETS + (NUM_ACTIONS,))
 
 ## Learning related constants
 # Continue here
-MIN_EXPLORE_RATE = 0.01
+MIN_EXPLORE_RATE = 0.01  # epsilon
 MIN_LEARNING_RATE = 0.01
 TEST_RAND_PROB = 0.2
 
@@ -50,7 +50,27 @@ STREAK_TO_END = 120
 SOLVED_T = 199
 VERBOSE = False
 
+# Defining variables for e-greedy policy
+ALPHA = 0.1  # Step size for gradient descent
+w = np.zeros((4, 2))  # Initalize weigths
+
 timesteps = []
+
+
+# Linear approximation function to expected returns
+def approx(weights, observation, action):
+    return np.dot(observation, weights)[action]
+
+
+# Random or Learned Policy, selected by epsilon
+def policy(env, weights, observation, epsilon):
+    actions = [0, 1]
+    if np.random.rand() < epsilon:
+        return random.choice(actions)
+    qs = []
+    for action in actions:
+        qs.append(approx(weights, observation, action))
+    return np.argmax(qs)
 
 
 def train():
@@ -63,8 +83,8 @@ def train():
 
     for episode in range(NUM_TRAIN_EPISODES):
 
-        #update learning streak and state bounds conditions
-        if (episode == (NUM_TRAIN_EPISODES/2)):
+        # update learning streak and state bounds conditions
+        if (episode == (NUM_TRAIN_EPISODES / 2)):
             MIN_LEARNING_RATE = 0.05
             STATE_BOUNDS[3] = (-math.radians(40), math.radians(40))
 
@@ -78,10 +98,13 @@ def train():
             env.render()
 
             # Select an action
-            action = select_action(state_0, explore_rate)
+            # action = select_action(state_0, explore_rate)
+
+            # Action defined based on policy
+            action = policy(env, w, obv, MIN_EXPLORE_RATE)
 
             # Execute the action
-            obv, reward, done, _ , _ = env.step(action)
+            obv, reward, done, _, _ = env.step(action)
 
             # Observe the result
             state = state_to_bucket(obv)
@@ -89,7 +112,7 @@ def train():
             # Update the Q based on the result
             best_q = np.amax(q_table[state])
             q_table[state_0 + (action,)] += learning_rate * (
-                        reward + discount_factor * (best_q) - q_table[state_0 + (action,)])
+                    reward + discount_factor * (best_q) - q_table[state_0 + (action,)])
 
             # Setting up for the next iteration
             state_0 = state
@@ -129,8 +152,6 @@ def train():
         learning_rate = get_learning_rate(episode)
 
 
-
-
 def test():
     num_test_streaks = 0
 
@@ -146,7 +167,6 @@ def test():
         tt = 0
         done = False
 
-
         while ((abs(obv[0]) < 2.4) & (abs(obv[2]) < 45)):
             # while not(done):
             tt += 1
@@ -158,7 +178,7 @@ def test():
             # action = select_action(state_0, 0.01)
 
             # Execute the action
-            obv, reward, done, _ , _ = env.step(action)
+            obv, reward, done, _, _ = env.step(action)
 
             # Observe the result
             state_0 = state_to_bucket(obv)
@@ -217,5 +237,3 @@ if __name__ == "__main__":
     plt.xlabel('Number of Episodes')
     plt.ylabel('Time Steps')
     plt.show()
-
-

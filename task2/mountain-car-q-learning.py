@@ -118,6 +118,6 @@ if __name__ == "__main__":
     plt.show()
 
 # test is problematic
-    for _ in range(1000):
-        test_reward = test(agent, env, learned_policy)
-        print("Test Iteration:{}, Test Reward:{}".format(_, test_reward ))
+#     for _ in range(1000):
+#         test_reward = test(agent, env, learned_policy)
+#         print("Test Iteration:{}, Test Reward:{}".format(_, test_reward ))
