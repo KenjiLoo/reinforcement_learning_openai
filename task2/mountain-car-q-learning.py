@@ -1,6 +1,10 @@
 import gym
 import numpy as np
 import matplotlib.pyplot as plt
+import math
+import time
+
+from numpy import random
 
 MAX_NUM_EPISODES = 100
 STEPS_PER_EPISODE = 200  #This is specific to MountainCar. May change with env
@@ -14,6 +18,7 @@ rewards = []
 
 class Q_Learner(object):
     def __init__(self, env):
+
         self.obs_shape = env.observation_space.shape
         self.obs_high = env.observation_space.high
         self.obs_low = env.observation_space.low
@@ -28,14 +33,13 @@ class Q_Learner(object):
         self.gamma = GAMMA  # Discount factor
         self.epsilon = 1.0
 
+
     def discretize(self, obs):
         return tuple(((obs - self.obs_low) / self.bin_width).astype(int))
 
     def get_action(self, obs):
+        # print("breaks here")
         discretized_obs = self.discretize(obs)
-        # Epsilon-Greedy action selection
-        if self.epsilon > EPSILON_MIN:
-            self.epsilon -= EPSILON_DECAY
         if np.random.random() > self.epsilon:
             return np.argmax(self.Q[discretized_obs])
         else:  # Choose a random action
@@ -104,6 +108,8 @@ def test(agent, env, policy):
 
 if __name__ == "__main__":
     env = gym.make('MountainCar-v0')
+    print("doesnt break here")
+
     agent = Q_Learner(env)
     learned_policy = train(agent, env)
     # Use the Gym Monitor wrapper to evalaute the agent and record video
