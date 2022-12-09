@@ -42,7 +42,7 @@ MIN_LEARNING_RATE = 0.01
 TEST_RAND_PROB = 0.2
 
 ## Defining the simulation related constants
-NUM_TRAIN_EPISODES = 100  # 1000
+NUM_TRAIN_EPISODES = 250  # 1000
 NUM_TEST_EPISODES = 1
 MAX_TRAIN_T = 250
 MAX_TEST_T = 250
@@ -213,6 +213,7 @@ if __name__ == "__main__":
     print('Testing ...')
     test()
 
+    plt.figure("cartpole original")
     plt.plot(range(NUM_TRAIN_EPISODES), timesteps)
     plt.xlabel('Number of Episodes')
     plt.ylabel('Time Steps')

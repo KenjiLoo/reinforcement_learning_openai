@@ -1,5 +1,3 @@
-# Adapted from: https://medium.com/@tuzzer/cart-pole-balancing-with-q-learning-b54c6068d947
-
 import gym
 import numpy as np
 import random
@@ -85,7 +83,7 @@ def train():
 
         # update learning streak and state bounds conditions
         if (episode == (NUM_TRAIN_EPISODES / 2)):
-            MIN_LEARNING_RATE = 0.05
+            learning_rate = 0.05
             STATE_BOUNDS[3] = (-math.radians(40), math.radians(40))
 
         # Reset the environment
@@ -101,7 +99,7 @@ def train():
             # action = select_action(state_0, explore_rate)
 
             # Action defined based on policy
-            action = policy(env, w, obv, MIN_EXPLORE_RATE)
+            action = policy(env, w, obv, explore_rate)
 
             # Execute the action
             obv, reward, done, _, _ = env.step(action)
@@ -117,20 +115,6 @@ def train():
             # Setting up for the next iteration
             state_0 = state
 
-            # Print data
-            if (VERBOSE):
-                print("\nEpisode = %d" % episode)
-                print("t = %d" % t)
-                print("Action: %d" % action)
-                print("State: %s" % str(state))
-                print("Reward: %f" % reward)
-                print("Best Q: %f" % best_q)
-                print("Explore rate: %f" % explore_rate)
-                print("Learning rate: %f" % learning_rate)
-                print("Streaks: %d" % num_train_streaks)
-
-                print("")
-
             if done:
                 print("Episode:%d finished after: %f time steps" % (episode, t))
                 timesteps.append(t)
@@ -139,8 +123,6 @@ def train():
                 else:
                     num_train_streaks = 0
                 break
-
-            # sleep(0.25)
 
         # It's considered done when it's solved over 120 times consecutively
         if num_train_streaks > STREAK_TO_END:
@@ -173,9 +155,10 @@ def test():
             env.render()
 
             # Select an action
-            action = select_action(state_0, 0)
+            # action = select_action(state_0, 0)
             # action = select_action(state_0, TEST_RAND_PROB)
             # action = select_action(state_0, 0.01)
+            action = policy(env, w, obv, MIN_EXPLORE_RATE)
 
             # Execute the action
             obv, reward, done, _, _ = env.step(action)
@@ -185,24 +168,11 @@ def test():
 
             print("Test episode %d; time step %f." % (episode, tt))
 
-
-def select_action(state, explore_rate):
-    # Select a random action
-    if random.random() < explore_rate:
-        action = env.action_space.sample()
-    # Select the action with the highest q
-    else:
-        action = np.argmax(q_table[state])
-    return action
-
-
 def get_explore_rate(t):
     return max(MIN_EXPLORE_RATE, min(1, 1.0 - math.log10((t + 1) / 25)))
 
-
 def get_learning_rate(t):
     return max(MIN_LEARNING_RATE, min(0.5, 1.0 - math.log10((t + 1) / 25)))
-
 
 def state_to_bucket(state):
     bucket_indice = []
@@ -233,6 +203,7 @@ if __name__ == "__main__":
     print('Testing ...')
     test()
 
+    plt.figure("cartpole updated")
     plt.plot(range(NUM_TRAIN_EPISODES), timesteps)
     plt.xlabel('Number of Episodes')
     plt.ylabel('Time Steps')

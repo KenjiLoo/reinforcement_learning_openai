@@ -2,7 +2,7 @@ import gym
 import numpy as np
 import matplotlib.pyplot as plt
 
-MAX_NUM_EPISODES = 100
+MAX_NUM_EPISODES = 10000
 STEPS_PER_EPISODE = 200  #This is specific to MountainCar. May change with env
 EPSILON_MIN = 0.005
 max_num_steps = MAX_NUM_EPISODES * STEPS_PER_EPISODE
@@ -33,13 +33,7 @@ class Q_Learner(object):
 
     def get_action(self, obs):
         discretized_obs = self.discretize(obs)
-        # Epsilon-Greedy action selection
-        if self.epsilon > EPSILON_MIN:
-            self.epsilon -= EPSILON_DECAY
-        if np.random.random() > self.epsilon:
-            return np.argmax(self.Q[discretized_obs])
-        else:  # Choose a random action
-            return np.random.choice([a for a in range(self.action_shape)])
+        return np.argmax(self.Q[discretized_obs])
 
     def learn(self, obs, action, reward, next_obs):
         discretized_obs = self.discretize(obs)
@@ -112,12 +106,13 @@ if __name__ == "__main__":
 
     env.close()
 
+    plt.figure("mountaincar original")
     plt.plot(range(MAX_NUM_EPISODES), rewards)
     plt.xlabel('Number of Episodes')
     plt.ylabel('Rewards')
     plt.show()
 
 # test is problematic
-    for _ in range(1000):
-        test_reward = test(agent, env, learned_policy)
-        print("Test Iteration:{}, Test Reward:{}".format(_, test_reward ))
+#     for _ in range(1000):
+#         test_reward = test(agent, env, learned_policy)
+#         print("Test Iteration:{}, Test Reward:{}".format(_, test_reward ))

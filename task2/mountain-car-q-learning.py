@@ -6,7 +6,7 @@ import time
 
 from numpy import random
 
-MAX_NUM_EPISODES = 100
+MAX_NUM_EPISODES = 10000
 STEPS_PER_EPISODE = 200  #This is specific to MountainCar. May change with env
 EPSILON_MIN = 0.005
 max_num_steps = MAX_NUM_EPISODES * STEPS_PER_EPISODE
@@ -118,6 +118,7 @@ if __name__ == "__main__":
 
     env.close()
 
+    plt.figure("mountaincar updated")
     plt.plot(range(MAX_NUM_EPISODES), rewards)
     plt.xlabel('Number of Episodes')
     plt.ylabel('Rewards')
