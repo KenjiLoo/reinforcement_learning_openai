@@ -14,7 +14,7 @@ EPSILON_DECAY = 500 * EPSILON_MIN / max_num_steps
 ALPHA = 0.01  # Learning rate
 GAMMA = 0.98  # Discount factor
 NUM_DISCRETE_BINS = 30  # Number of bins to Discretize each observation dim
-rewards = []
+rewards = [] # Collects rewards info
 #--------------------------------------------------------#
 
 """
