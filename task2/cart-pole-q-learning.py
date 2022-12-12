@@ -1,3 +1,4 @@
+#--------------------------------------------------------#
 import gym
 import numpy as np
 import random
@@ -10,6 +11,7 @@ import random
 import math
 from time import sleep
 import matplotlib.pyplot as plt
+#--------------------------------------------------------#
 
 ## Initialize the "Cart-Pole" environment
 env = gym.make('CartPole-v0')
@@ -40,7 +42,7 @@ MIN_LEARNING_RATE = 0.01
 TEST_RAND_PROB = 0.2
 
 ## Defining the simulation related constants
-NUM_TRAIN_EPISODES = 100  # 1000
+NUM_TRAIN_EPISODES = 1000  # 1000
 NUM_TEST_EPISODES = 1
 MAX_TRAIN_T = 250
 MAX_TEST_T = 250
@@ -54,10 +56,12 @@ w = np.zeros((4, 2))  # Initalize weigths
 
 timesteps = []
 
+#--------------------------------------------------------#
 
 # Linear approximation function to expected returns
 def approx(weights, observation, action):
     return np.dot(observation, weights)[action]
+#--------------------------------------------------------#
 
 
 # Random or Learned Policy, selected by epsilon
@@ -70,6 +74,7 @@ def policy(env, weights, observation, epsilon):
         qs.append(approx(weights, observation, action))
     return np.argmax(qs)
 
+#--------------------------------------------------------#
 
 def train():
     ## Instantiating the learning related parameters
@@ -133,6 +138,7 @@ def train():
         explore_rate = get_explore_rate(episode)
         learning_rate = get_learning_rate(episode)
 
+#--------------------------------------------------------#
 
 def test():
     num_test_streaks = 0
@@ -167,6 +173,7 @@ def test():
             state_0 = state_to_bucket(obv)
 
             print("Test episode %d; time step %f." % (episode, tt))
+#--------------------------------------------------------#
 
 def get_explore_rate(t):
     return max(MIN_EXPLORE_RATE, min(1, 1.0 - math.log10((t + 1) / 25)))
@@ -195,6 +202,7 @@ def state_to_bucket(state):
             # to visualize, i.e. num_buckets x percentage in width.
         bucket_indice.append(bucket_index)
     return tuple(bucket_indice)
+#--------------------------------------------------------#
 
 
 if __name__ == "__main__":
@@ -208,3 +216,4 @@ if __name__ == "__main__":
     plt.xlabel('Number of Episodes')
     plt.ylabel('Time Steps')
     plt.show()
+#--------------------------------------------------------#
